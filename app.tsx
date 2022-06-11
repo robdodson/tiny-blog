@@ -1,12 +1,15 @@
 import * as React from 'react';
 import * as Server from 'react-dom/server';
 import matter from 'gray-matter';
-import path from 'path';
-import fs from 'fs';
+import * as path from 'path';
+import * as fs from 'fs';
+import MarkdownIt from 'markdown-it';
+import Post from './components/post';
+const md = new MarkdownIt();
 
 export const POSTS_PATH = path.join(process.cwd(), 'posts');
 
-export const getSourceOfFile = (fileName) => {
+export const getSourceOfFile = (fileName: string) => {
   return fs.readFileSync(path.join(POSTS_PATH, fileName), 'utf-8');
 };
 
@@ -26,21 +29,6 @@ export const getAllPosts = () => {
       };
     });
 };
-
-function Post({ post }) {
-  const { frontmatter, content } = post;
-  return (
-    <html>
-      <head>
-        <title>{frontmatter.title}</title>
-      </head>
-      <body>
-        <h1>{frontmatter.title}</h1>
-        <section>{content}</section>
-      </body>
-    </html>
-  );
-}
 
 const posts = getAllPosts();
 posts.forEach((post) => {
