@@ -1,0 +1,18 @@
+{
+  "name": "tiny-blog",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "esbuild app.jsx --platform=node --outfile=out.mjs && node out.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "esbuild": "^0.14.43",
+    "gray-matter": "^4.0.3",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0"
+  }
+}
