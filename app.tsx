@@ -1,38 +1,36 @@
 import * as React from 'react';
-import * as Server from 'react-dom/server';
-import matter from 'gray-matter';
+import * as ReactDOMServer from 'react-dom/server';
 import * as path from 'path';
 import * as fs from 'fs';
-import MarkdownIt from 'markdown-it';
+import { Helmet } from 'react-helmet';
+
+import { getAllPosts } from './lib/posts';
+import Layout from './components/layout';
 import Post from './components/post';
-const md = new MarkdownIt();
-
-export const POSTS_PATH = path.join(process.cwd(), 'posts');
-
-export const getSourceOfFile = (fileName: string) => {
-  return fs.readFileSync(path.join(POSTS_PATH, fileName), 'utf-8');
-};
-
-export const getAllPosts = () => {
-  return fs
-    .readdirSync(POSTS_PATH)
-    .filter((path) => /\.md$/.test(path))
-    .map((fileName) => {
-      const source = getSourceOfFile(fileName);
-      const slug = fileName.replace(/\.md$/, '');
-      const { data, content } = matter(source);
-
-      return {
-        frontmatter: data,
-        slug: slug,
-        content,
-      };
-    });
-};
 
 const posts = getAllPosts();
 posts.forEach((post) => {
   const file = `dist/posts/${post.slug}/index.html`;
   fs.mkdirSync(path.dirname(file), { recursive: true });
-  fs.writeFileSync(file, Server.renderToString(<Post post={post} />));
+
+  const appString = ReactDOMServer.renderToString(
+    <Layout>
+      <Post post={post} />
+    </Layout>
+  );
+  const helmet = Helmet.renderStatic();
+
+  const html = `<!DOCTYPE html>
+    <html lang="en">
+      <head>
+        ${helmet.title.toString()}
+        ${helmet.meta.toString()}
+      </head>
+      <body>
+        ${appString}
+      </body>
+    </html>
+  `;
+
+  fs.writeFileSync(file, html);
 });
