@@ -3,15 +3,16 @@ import * as fs from 'fs';
 
 import matter from 'gray-matter';
 
+export const HOME_PATH = path.join(process.cwd(), 'site');
 export const POSTS_PATH = path.join(process.cwd(), 'site', 'posts');
 
 export const getSourceOfFile = (fileName: string) => {
   return fs.readFileSync(path.join(POSTS_PATH, fileName), 'utf-8');
 };
 
-export const getAllPosts = () => {
+export const getAllPosts = (postsPath: string) => {
   return fs
-    .readdirSync(POSTS_PATH)
+    .readdirSync(postsPath)
     .filter((path) => /\.md$/.test(path))
     .map((fileName) => {
       const source = getSourceOfFile(fileName);

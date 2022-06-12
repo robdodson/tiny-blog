@@ -4,7 +4,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { Helmet } from 'react-helmet';
 
-import { getAllPosts } from './lib/posts';
+import { getAllPosts, HOME_PATH, POSTS_PATH } from './lib/posts';
 import Layout from './components/layout';
 
 // TODO:
@@ -12,7 +12,7 @@ import Layout from './components/layout';
 // https://github.com/RtVision/esbuild-dynamic-import
 
 async function renderPosts() {
-  const posts = getAllPosts();
+  const posts = getAllPosts(POSTS_PATH);
   for (const post of posts) {
     const permalink = `dist/posts/${post.slug}/index.html`;
     const Component = (await import('./components/post')).default;
@@ -21,11 +21,18 @@ async function renderPosts() {
   }
 }
 
-function render({ permalink, Component, props }) {
+type RenderProps = {
+  permalink: string;
+  Component: React.FunctionComponent;
+  props: Object;
+};
+
+function render({ permalink, Component, props }: RenderProps) {
   fs.mkdirSync(path.dirname(permalink), { recursive: true });
 
   const appString = ReactDOMServer.renderToString(
     <Layout>
+      {/* @ts-ignore */}
       <Component {...props} />
     </Layout>
   );
@@ -47,7 +54,7 @@ function render({ permalink, Component, props }) {
 }
 
 async function main() {
-  await renderPosts();
+  renderPosts();
 }
 
 main().catch((err) => console.error(err));

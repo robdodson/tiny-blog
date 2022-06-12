@@ -1,5 +1,6 @@
 - Walk the site directory, for each markdown file, make a data object that includes
   the permalink, slug, frontmatter, and content.
+- Pass the data object as props to the page component
 
 - Add support for 'layout' frontmatter. This will dynamically import a React
   component.

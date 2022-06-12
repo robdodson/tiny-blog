@@ -1,4 +1,5 @@
 ---
+layout: post
 title: A simple post
 date: '2019-06-18'
 draft: true
