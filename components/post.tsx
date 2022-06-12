@@ -3,8 +3,8 @@ import { Helmet } from 'react-helmet';
 import MarkdownIt from 'markdown-it';
 const md = new MarkdownIt();
 
-export default function Post({ post }) {
-  const { frontmatter, content } = post;
+export default function Post({ page }) {
+  const { frontmatter, content } = page;
   return (
     <>
       <Helmet>
