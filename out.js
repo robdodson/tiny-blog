@@ -1188,26 +1188,26 @@ var require_react_development = __commonJS({
           }
           return lazyType;
         }
-        function forwardRef(render) {
+        function forwardRef(render2) {
           {
-            if (render != null && render.$$typeof === REACT_MEMO_TYPE) {
+            if (render2 != null && render2.$$typeof === REACT_MEMO_TYPE) {
               error("forwardRef requires a render function but received a `memo` component. Instead of forwardRef(memo(...)), use memo(forwardRef(...)).");
-            } else if (typeof render !== "function") {
-              error("forwardRef requires a render function but was given %s.", render === null ? "null" : typeof render);
+            } else if (typeof render2 !== "function") {
+              error("forwardRef requires a render function but was given %s.", render2 === null ? "null" : typeof render2);
             } else {
-              if (render.length !== 0 && render.length !== 2) {
-                error("forwardRef render functions accept exactly two parameters: props and ref. %s", render.length === 1 ? "Did you forget to use the ref parameter?" : "Any additional parameter will be undefined.");
+              if (render2.length !== 0 && render2.length !== 2) {
+                error("forwardRef render functions accept exactly two parameters: props and ref. %s", render2.length === 1 ? "Did you forget to use the ref parameter?" : "Any additional parameter will be undefined.");
               }
             }
-            if (render != null) {
-              if (render.defaultProps != null || render.propTypes != null) {
+            if (render2 != null) {
+              if (render2.defaultProps != null || render2.propTypes != null) {
                 error("forwardRef render functions do not support propTypes or defaultProps. Did you accidentally pass a React component?");
               }
             }
           }
           var elementType = {
             $$typeof: REACT_FORWARD_REF_TYPE,
-            render
+            render: render2
           };
           {
             var ownName;
@@ -1219,8 +1219,8 @@ var require_react_development = __commonJS({
               },
               set: function(name) {
                 ownName = name;
-                if (!render.name && !render.displayName) {
-                  render.displayName = name;
+                if (!render2.name && !render2.displayName) {
+                  render2.displayName = name;
                 }
               }
             });
@@ -9567,14 +9567,14 @@ var require_react_dom_server_legacy_node_development = __commonJS({
               context = context._context;
             }
           }
-          var render = props.children;
+          var render2 = props.children;
           {
-            if (typeof render !== "function") {
+            if (typeof render2 !== "function") {
               error("A context consumer was rendered with multiple children, or a child that isn't a function. A context consumer expects a single child that is a function. If you did pass a function, make sure there is no trailing or leading whitespace around it.");
             }
           }
           var newValue = readContext(context);
-          var newChildren = render(newValue);
+          var newChildren = render2(newValue);
           renderNodeDestructive(request, task, newChildren);
         }
         function renderContextProvider(request, task, type, props) {
@@ -14529,14 +14529,14 @@ var require_react_dom_server_node_development = __commonJS({
               context = context._context;
             }
           }
-          var render = props.children;
+          var render2 = props.children;
           {
-            if (typeof render !== "function") {
+            if (typeof render2 !== "function") {
               error("A context consumer was rendered with multiple children, or a child that isn't a function. A context consumer expects a single child that is a function. If you did pass a function, make sure there is no trailing or leading whitespace around it.");
             }
           }
           var newValue = readContext(context);
-          var newChildren = render(newValue);
+          var newChildren = render2(newValue);
           renderNodeDestructive(request, task, newChildren);
         }
         function renderContextProvider(request, task, type, props) {
@@ -16259,7 +16259,7 @@ var require_lib = __commonJS({
             mountedInstances.splice(index, 1);
             emitChange();
           };
-          _proto.render = function render() {
+          _proto.render = function render2() {
             return /* @__PURE__ */ React__default.createElement(WrappedComponent, this.props);
           };
           return SideEffect2;
@@ -17014,7 +17014,7 @@ var require_Helmet = __commonJS({
           newProps = this.mapArrayTypeChildrenToProps(arrayTypeChildren, newProps);
           return newProps;
         };
-        HelmetWrapper.prototype.render = function render() {
+        HelmetWrapper.prototype.render = function render2() {
           var _props = this.props, children = _props.children, props = objectWithoutProperties(_props, ["children"]);
           var newProps = _extends({}, props);
           if (children) {
@@ -25523,7 +25523,7 @@ var import_react_helmet3 = __toESM(require_Helmet());
 var path = __toESM(require("path"));
 var fs = __toESM(require("fs"));
 var import_gray_matter = __toESM(require_gray_matter());
-var POSTS_PATH = path.join(process.cwd(), "posts");
+var POSTS_PATH = path.join(process.cwd(), "site", "posts");
 var getSourceOfFile = (fileName) => {
   return fs.readFileSync(path.join(POSTS_PATH, fileName), "utf-8");
 };
@@ -25553,31 +25553,36 @@ function Layout({ children }) {
 }
 
 // app.tsx
-async function main() {
+async function renderPosts() {
   const posts = getAllPosts();
   for (const post of posts) {
-    if (post.frontmatter.layout) {
-      const file = `dist/posts/${post.slug}/index.html`;
-      fs2.mkdirSync(path2.dirname(file), { recursive: true });
-      const Component = (await Promise.resolve().then(() => (init_post(), post_exports))).default;
-      const appString = ReactDOMServer.renderToString(/* @__PURE__ */ React3.createElement(Layout, null, /* @__PURE__ */ React3.createElement(Component, {
-        post
-      })));
-      const helmet = import_react_helmet3.Helmet.renderStatic();
-      const html = `<!DOCTYPE html>
-        <html lang="en">
-          <head>
-            ${helmet.title.toString()}
-            ${helmet.meta.toString()}
-          </head>
-          <body>
-            ${appString}
-          </body>
-        </html>
-      `;
-      fs2.writeFileSync(file, html);
-    }
+    const permalink = `dist/posts/${post.slug}/index.html`;
+    const Component = (await Promise.resolve().then(() => (init_post(), post_exports))).default;
+    const props = { post };
+    render({ permalink, Component, props });
   }
+}
+function render({ permalink, Component, props }) {
+  fs2.mkdirSync(path2.dirname(permalink), { recursive: true });
+  const appString = ReactDOMServer.renderToString(/* @__PURE__ */ React3.createElement(Layout, null, /* @__PURE__ */ React3.createElement(Component, {
+    ...props
+  })));
+  const helmet = import_react_helmet3.Helmet.renderStatic();
+  const html = `<!DOCTYPE html>
+      <html lang="en">
+        <head>
+          ${helmet.title.toString()}
+          ${helmet.meta.toString()}
+        </head>
+        <body>
+          ${appString}
+        </body>
+      </html>
+    `;
+  fs2.writeFileSync(permalink, html);
+}
+async function main() {
+  await renderPosts();
 }
 main().catch((err) => console.error(err));
 /*

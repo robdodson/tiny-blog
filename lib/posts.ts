@@ -3,7 +3,7 @@ import * as fs from 'fs';
 
 import matter from 'gray-matter';
 
-export const POSTS_PATH = path.join(process.cwd(), 'posts');
+export const POSTS_PATH = path.join(process.cwd(), 'site', 'posts');
 
 export const getSourceOfFile = (fileName: string) => {
   return fs.readFileSync(path.join(POSTS_PATH, fileName), 'utf-8');

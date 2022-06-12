@@ -6,39 +6,48 @@ import { Helmet } from 'react-helmet';
 
 import { getAllPosts } from './lib/posts';
 import Layout from './components/layout';
-import Post from './components/post';
+
+// TODO:
+// https://github.com/evanw/esbuild/issues/56
+// https://github.com/RtVision/esbuild-dynamic-import
+
+async function renderPosts() {
+  const posts = getAllPosts();
+  for (const post of posts) {
+    const permalink = `dist/posts/${post.slug}/index.html`;
+    const Component = (await import('./components/post')).default;
+    const props = { post };
+    render({ permalink, Component, props });
+  }
+}
+
+function render({ permalink, Component, props }) {
+  fs.mkdirSync(path.dirname(permalink), { recursive: true });
+
+  const appString = ReactDOMServer.renderToString(
+    <Layout>
+      <Component {...props} />
+    </Layout>
+  );
+  const helmet = Helmet.renderStatic();
+
+  const html = `<!DOCTYPE html>
+      <html lang="en">
+        <head>
+          ${helmet.title.toString()}
+          ${helmet.meta.toString()}
+        </head>
+        <body>
+          ${appString}
+        </body>
+      </html>
+    `;
+
+  fs.writeFileSync(permalink, html);
+}
 
 async function main() {
-  const posts = getAllPosts();
-
-  for (const post of posts) {
-    if (post.frontmatter.layout) {
-      const file = `dist/posts/${post.slug}/index.html`;
-      fs.mkdirSync(path.dirname(file), { recursive: true });
-      const Component = (await import('./components/post')).default;
-
-      const appString = ReactDOMServer.renderToString(
-        <Layout>
-          <Component post={post} />
-        </Layout>
-      );
-      const helmet = Helmet.renderStatic();
-
-      const html = `<!DOCTYPE html>
-        <html lang="en">
-          <head>
-            ${helmet.title.toString()}
-            ${helmet.meta.toString()}
-          </head>
-          <body>
-            ${appString}
-          </body>
-        </html>
-      `;
-
-      fs.writeFileSync(file, html);
-    }
-  }
+  await renderPosts();
 }
 
 main().catch((err) => console.error(err));
