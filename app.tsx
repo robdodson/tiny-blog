@@ -4,13 +4,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { Helmet } from 'react-helmet';
 
-import {
-  getAllPages,
-  getAllPosts,
-  getSourceOfFile,
-  HOME_PATH,
-  POSTS_PATH,
-} from './lib/posts';
+import { getAllPages } from './lib/posts';
 import Layout from './components/layout';
 
 // TODO:
@@ -53,7 +47,8 @@ async function main() {
   const Component = (await import('./components/post')).default;
   const pages = await getAllPages();
   for (const page of pages) {
-    render({ page, Component });
+    // render({ page, Component });
+    console.log(page.permalink);
   }
 }
 
