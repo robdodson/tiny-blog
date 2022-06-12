@@ -4,8 +4,15 @@ var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __esm = (fn, res) => function __init() {
+  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
+};
 var __commonJS = (cb, mod) => function __require() {
   return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+};
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
   if (from && typeof from === "object" || typeof from === "function") {
@@ -25479,6 +25486,32 @@ var require_markdown_it = __commonJS({
   }
 });
 
+// components/post.tsx
+var post_exports = {};
+__export(post_exports, {
+  default: () => Post
+});
+function Post({ post }) {
+  const { frontmatter, content } = post;
+  return /* @__PURE__ */ import_react2.default.createElement(import_react2.default.Fragment, null, /* @__PURE__ */ import_react2.default.createElement(import_react_helmet2.Helmet, null, /* @__PURE__ */ import_react2.default.createElement("meta", {
+    charSet: "utf-8"
+  }), /* @__PURE__ */ import_react2.default.createElement("title", null, frontmatter.title), /* @__PURE__ */ import_react2.default.createElement("link", {
+    rel: "canonical",
+    href: "http://robdodson.me"
+  })), /* @__PURE__ */ import_react2.default.createElement("h1", null, frontmatter.title), /* @__PURE__ */ import_react2.default.createElement("div", {
+    dangerouslySetInnerHTML: { __html: md.render(content) }
+  }));
+}
+var import_react2, import_react_helmet2, import_markdown_it, md;
+var init_post = __esm({
+  "components/post.tsx"() {
+    import_react2 = __toESM(require_react());
+    import_react_helmet2 = __toESM(require_Helmet());
+    import_markdown_it = __toESM(require_markdown_it());
+    md = new import_markdown_it.default();
+  }
+});
+
 // app.tsx
 var React3 = __toESM(require_react());
 var ReactDOMServer = __toESM(require_server_node());
@@ -25519,45 +25552,34 @@ function Layout({ children }) {
   })), /* @__PURE__ */ import_react.default.createElement("main", null, children));
 }
 
-// components/post.tsx
-var import_react2 = __toESM(require_react());
-var import_react_helmet2 = __toESM(require_Helmet());
-var import_markdown_it = __toESM(require_markdown_it());
-var md = new import_markdown_it.default();
-function Post({ post }) {
-  const { frontmatter, content } = post;
-  return /* @__PURE__ */ import_react2.default.createElement(import_react2.default.Fragment, null, /* @__PURE__ */ import_react2.default.createElement(import_react_helmet2.Helmet, null, /* @__PURE__ */ import_react2.default.createElement("meta", {
-    charSet: "utf-8"
-  }), /* @__PURE__ */ import_react2.default.createElement("title", null, frontmatter.title), /* @__PURE__ */ import_react2.default.createElement("link", {
-    rel: "canonical",
-    href: "http://robdodson.me"
-  })), /* @__PURE__ */ import_react2.default.createElement("h1", null, frontmatter.title), /* @__PURE__ */ import_react2.default.createElement("div", {
-    dangerouslySetInnerHTML: { __html: md.render(content) }
-  }));
-}
-
 // app.tsx
-var posts = getAllPosts();
-posts.forEach((post) => {
-  const file = `dist/posts/${post.slug}/index.html`;
-  fs2.mkdirSync(path2.dirname(file), { recursive: true });
-  const appString = ReactDOMServer.renderToString(/* @__PURE__ */ React3.createElement(Layout, null, /* @__PURE__ */ React3.createElement(Post, {
-    post
-  })));
-  const helmet = import_react_helmet3.Helmet.renderStatic();
-  const html = `<!DOCTYPE html>
-    <html lang="en">
-      <head>
-        ${helmet.title.toString()}
-        ${helmet.meta.toString()}
-      </head>
-      <body>
-        ${appString}
-      </body>
-    </html>
-  `;
-  fs2.writeFileSync(file, html);
-});
+async function main() {
+  const posts = getAllPosts();
+  for (const post of posts) {
+    if (post.frontmatter.layout) {
+      const file = `dist/posts/${post.slug}/index.html`;
+      fs2.mkdirSync(path2.dirname(file), { recursive: true });
+      const Component = (await Promise.resolve().then(() => (init_post(), post_exports))).default;
+      const appString = ReactDOMServer.renderToString(/* @__PURE__ */ React3.createElement(Layout, null, /* @__PURE__ */ React3.createElement(Component, {
+        post
+      })));
+      const helmet = import_react_helmet3.Helmet.renderStatic();
+      const html = `<!DOCTYPE html>
+        <html lang="en">
+          <head>
+            ${helmet.title.toString()}
+            ${helmet.meta.toString()}
+          </head>
+          <body>
+            ${appString}
+          </body>
+        </html>
+      `;
+      fs2.writeFileSync(file, html);
+    }
+  }
+}
+main().catch((err) => console.error(err));
 /*
 object-assign
 (c) Sindre Sorhus

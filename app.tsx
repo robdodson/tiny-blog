@@ -8,29 +8,37 @@ import { getAllPosts } from './lib/posts';
 import Layout from './components/layout';
 import Post from './components/post';
 
-const posts = getAllPosts();
-posts.forEach((post) => {
-  const file = `dist/posts/${post.slug}/index.html`;
-  fs.mkdirSync(path.dirname(file), { recursive: true });
+async function main() {
+  const posts = getAllPosts();
 
-  const appString = ReactDOMServer.renderToString(
-    <Layout>
-      <Post post={post} />
-    </Layout>
-  );
-  const helmet = Helmet.renderStatic();
+  for (const post of posts) {
+    if (post.frontmatter.layout) {
+      const file = `dist/posts/${post.slug}/index.html`;
+      fs.mkdirSync(path.dirname(file), { recursive: true });
+      const Component = (await import('./components/post')).default;
 
-  const html = `<!DOCTYPE html>
-    <html lang="en">
-      <head>
-        ${helmet.title.toString()}
-        ${helmet.meta.toString()}
-      </head>
-      <body>
-        ${appString}
-      </body>
-    </html>
-  `;
+      const appString = ReactDOMServer.renderToString(
+        <Layout>
+          <Component post={post} />
+        </Layout>
+      );
+      const helmet = Helmet.renderStatic();
 
-  fs.writeFileSync(file, html);
-});
+      const html = `<!DOCTYPE html>
+        <html lang="en">
+          <head>
+            ${helmet.title.toString()}
+            ${helmet.meta.toString()}
+          </head>
+          <body>
+            ${appString}
+          </body>
+        </html>
+      `;
+
+      fs.writeFileSync(file, html);
+    }
+  }
+}
+
+main().catch((err) => console.error(err));
