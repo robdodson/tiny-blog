@@ -1,5 +1,6 @@
 ---
 layout: home
+permalink: index.html
 introHeading: Hi there! 👋
 postsHeading: Latest posts
 archiveButtonText: See all posts

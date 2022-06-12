@@ -47,8 +47,7 @@ async function main() {
   const Component = (await import('./components/post')).default;
   const pages = await getAllPages();
   for (const page of pages) {
-    // render({ page, Component });
-    console.log(page.permalink);
+    render({ page, Component });
   }
 }
 
