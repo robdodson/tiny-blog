@@ -25,8 +25,8 @@ export default function Home(props) {
       <h2>Posts</h2>
       <ul>
         {props.posts.map((post) => (
-          <li key={post.slug}>
-            <a href={post.slug}>{post.frontmatter.title}</a>
+          <li key={post.url}>
+            <a href={post.url}>{post.frontmatter.title}</a>
           </li>
         ))}
       </ul>

@@ -29,10 +29,12 @@ export async function getAllPages(): Promise<Page[]> {
     if (data.permalink) {
       permalink = path.join(DIST_DIR, data.permalink);
     }
+    const url = permalink.replace(DIST_DIR, '').replace('index.html', '');
 
     return {
       frontmatter: data,
       slug: slug,
+      url,
       permalink,
       content,
     };
