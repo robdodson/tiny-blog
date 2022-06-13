@@ -17,6 +17,7 @@ export const getSourceOfFile = (fileName: string) => {
   return fs.readFileSync(fileName, 'utf-8');
 };
 
+// TODO: This should be cached
 export async function getAllPages(): Promise<Page[]> {
   let pages = await glob(path.join(SITE_DIR, '**', '*.md'));
   return pages.map((fileName) => {
