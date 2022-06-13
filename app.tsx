@@ -6,8 +6,8 @@ import { Helmet } from 'react-helmet';
 
 import { getAllPages } from './lib/posts';
 import Layout from './components/layout';
-import * as Post from './components/post';
-import * as Home from './components/home';
+import * as Post from './pages/post';
+import * as Home from './pages/home';
 
 // esbuild doesn't support dynamic imports (without writing a custom plugin)
 // so, for now, I'm doing this gross import map thing
