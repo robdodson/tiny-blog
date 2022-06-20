@@ -46,6 +46,7 @@ function render({ page, Component, loaderData }: RenderProps) {
         <head>
           ${helmet.title.toString()}
           ${helmet.meta.toString()}
+          ${helmet.link.toString()}
         </head>
         <body>
           ${appString}

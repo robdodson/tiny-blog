@@ -12,15 +12,12 @@ require("esbuild")
         if (error) {
           return console.error("watch build failed:", error);
         }
-        console.log("watch build succeeded:", result);
         exec("node out.js");
       },
     },
   })
   .then((result) => {
-    if (process.env.ESBUILD_ENV_WATCH == "false") {
-      exec("node out.js");
-      result.stop();
-    }
+    console.log("then");
+    exec("node out.js");
   })
   .catch(() => process.exit(1));
