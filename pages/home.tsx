@@ -1,19 +1,15 @@
-import React from 'react';
-import { Helmet } from 'react-helmet';
-import MarkdownIt from 'markdown-it';
-import { getAllPages } from '../lib/posts';
-const md = new MarkdownIt({ html: true });
+import React from "react";
+import { Helmet } from "react-helmet";
+import { getAllPages } from "../lib/posts";
 
 export async function loader() {
   const pages = await getAllPages();
-  const posts = pages.filter((page) => page.permalink.includes('/posts/'));
+  const posts = pages.filter((page) => page.permalink.includes("/posts/"));
   return { posts };
 }
 
 export default function Home(props) {
   const { frontmatter, content } = props.page;
-  const markdown = md.render(content);
-  console.log(markdown);
   return (
     <>
       <Helmet>
@@ -23,7 +19,7 @@ export default function Home(props) {
       </Helmet>
 
       <h1>{frontmatter.introHeading}</h1>
-      <div dangerouslySetInnerHTML={{ __html: markdown }} />
+      <div dangerouslySetInnerHTML={{ __html: content }} />
       <h2>Posts</h2>
       <ul>
         {props.posts.map((post) => (
@@ -33,7 +29,7 @@ export default function Home(props) {
         ))}
       </ul>
       {/* <pre>{JSON.stringify(props, null, 2)}</pre> */}
-      <pre>{markdown}</pre>
+      <pre>{content}</pre>
     </>
   );
 }

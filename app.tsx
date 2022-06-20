@@ -1,14 +1,15 @@
-import * as React from 'react';
-import * as ReactDOMServer from 'react-dom/server';
-import * as path from 'path';
-import * as fs from 'fs';
-import { Helmet } from 'react-helmet';
+import * as React from "react";
+import * as ReactDOMServer from "react-dom/server";
+import * as path from "path";
+import * as fs from "fs";
+import { Helmet } from "react-helmet";
 
-import { getAllPages } from './lib/posts';
-import Layout from './components/layout';
-import * as Post from './pages/post';
-import * as Home from './pages/home';
+import { getAllPages } from "./lib/posts";
+import Layout from "./components/layout";
+import * as Post from "./pages/post";
+import * as Home from "./pages/home";
 
+// TODO: Generate the import map using a script and then consume it in this file.
 // esbuild doesn't support dynamic imports (without writing a custom plugin)
 // so, for now, I'm doing this gross import map thing
 // https://github.com/evanw/esbuild/issues/56
@@ -24,15 +25,15 @@ const importMap: Record<
 type RenderProps = {
   page: Page;
   Component: React.FunctionComponent;
-  componentProps?: any;
+  loaderData?: any;
 };
 
-function render({ page, Component, componentProps }: RenderProps) {
+function render({ page, Component, loaderData }: RenderProps) {
   const { permalink } = page;
   fs.mkdirSync(path.dirname(permalink), { recursive: true });
-  const props = { page, ...componentProps };
+  const props = { page, ...loaderData };
 
-  const appString = ReactDOMServer.renderToString(
+  const appString = ReactDOMServer.renderToStaticMarkup(
     <Layout>
       {/* @ts-ignore */}
       <Component {...props} />
@@ -59,12 +60,12 @@ async function main() {
   const pages = await getAllPages();
   for (const page of pages) {
     const { Component, loader } =
-      importMap[page.frontmatter.layout] || importMap['default'];
-    let componentProps;
+      importMap[page.frontmatter.layout] || importMap["default"];
+    let loaderData;
     if (loader) {
-      componentProps = await loader();
+      loaderData = await loader();
     }
-    render({ page, Component, componentProps });
+    render({ page, Component, loaderData });
   }
 }
 
