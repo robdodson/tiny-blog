@@ -8,6 +8,7 @@ import { getPages } from "./models/pages";
 import Layout from "./components/layout";
 import * as Post from "./pages/post";
 import * as Home from "./pages/home";
+import * as Archive from "./pages/archive";
 
 // TODO: Generate the import map using a script and then consume it in this file.
 // esbuild doesn't support dynamic imports (without writing a custom plugin)
@@ -20,6 +21,7 @@ const importMap: Record<
   Default: { Component: Post.default },
   Home: { Component: Home.default, loader: Home.loader },
   Post: { Component: Post.default },
+  Archive: { Component: Archive.default, loader: Archive.loader },
 };
 
 type RenderProps = {

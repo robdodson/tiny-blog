@@ -1,7 +1,6 @@
 ---
-page: Post
 title: A simple post
-date: "2019-06-18"
+date: '2019-06-18'
 draft: true
 tags:
   - demo-content
@@ -28,3 +27,11 @@ How about an ordered list of stuff:
 3. Sed posuere consectetur est at lobortis
 
 Hopefully, this has demonstrated how simple it is to make a nice looking blog with Hylia.
+
+import Hello from './app/components/hello';
+import { Goodbye } from './app/components/goodbye';
+import Foo from './app/components/foo';
+
+<Hello />
+<Goodbye />
+<Foo color={'red'} />
