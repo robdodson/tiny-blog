@@ -1,5 +1,5 @@
 ---
-layout: home
+page: Home
 permalink: index.html
 introHeading: Hi there! 👋
 postsHeading: Latest posts

@@ -1,13 +1,18 @@
 import React from "react";
-import { getPosts } from "../models/posts";
+import { getPages } from "../models/pages";
 
 export async function loader() {
-  const pages = await getPosts();
+  const pages = await getPages();
   const posts = pages.filter((page) => page.permalink.includes("/posts/"));
   return { posts };
 }
 
-export default function Home(props) {
+type Props = {
+  page: PageData;
+  posts: PageData[];
+};
+
+export default function Home(props: Props) {
   const { frontmatter, content } = props.page;
   return (
     <>
@@ -21,8 +26,6 @@ export default function Home(props) {
           </li>
         ))}
       </ul>
-      {/* <pre>{JSON.stringify(props, null, 2)}</pre> */}
-      <pre>{content}</pre>
     </>
   );
 }

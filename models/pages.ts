@@ -10,7 +10,7 @@ export const DIST_DIR = path.join(process.cwd(), "dist");
 
 const md = new MarkdownIt({ html: true });
 
-let pagesCache: Page[] = [];
+let pagesCache: PageData[] = [];
 
 export function defaultPermalink(fileName: string) {
   return path
@@ -22,7 +22,7 @@ export const getSourceOfFile = (fileName: string) => {
   return fs.readFileSync(fileName, "utf-8");
 };
 
-export async function getPosts(): Promise<Page[]> {
+export async function getPages(): Promise<PageData[]> {
   if (pagesCache.length) {
     return pagesCache;
   }

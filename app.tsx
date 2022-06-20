@@ -4,7 +4,7 @@ import * as path from "path";
 import * as fs from "fs";
 import { Helmet } from "react-helmet";
 
-import { getPosts } from "./models/posts";
+import { getPages } from "./models/pages";
 import Layout from "./components/layout";
 import * as Post from "./pages/post";
 import * as Home from "./pages/home";
@@ -17,13 +17,13 @@ const importMap: Record<
   string,
   { Component: React.FunctionComponent; loader?: () => Promise<any> }
 > = {
-  default: { Component: Post.default },
-  home: { Component: Home.default, loader: Home.loader },
-  post: { Component: Post.default },
+  Default: { Component: Post.default },
+  Home: { Component: Home.default, loader: Home.loader },
+  Post: { Component: Post.default },
 };
 
 type RenderProps = {
-  page: Page;
+  page: PageData;
   Component: React.FunctionComponent;
   loaderData?: any;
 };
@@ -57,10 +57,10 @@ function render({ page, Component, loaderData }: RenderProps) {
 }
 
 async function main() {
-  const pages = await getPosts();
+  const pages = await getPages();
   for (const page of pages) {
     const { Component, loader } =
-      importMap[page.frontmatter.layout] || importMap["default"];
+      importMap[page.frontmatter.page] ?? importMap["Default"];
     let loaderData;
     if (loader) {
       loaderData = await loader();
