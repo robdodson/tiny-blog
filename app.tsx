@@ -4,7 +4,7 @@ import * as path from "path";
 import * as fs from "fs";
 import { Helmet } from "react-helmet";
 
-import { getAllPages } from "./lib/posts";
+import { getPosts } from "./models/posts";
 import Layout from "./components/layout";
 import * as Post from "./pages/post";
 import * as Home from "./pages/home";
@@ -57,7 +57,7 @@ function render({ page, Component, loaderData }: RenderProps) {
 }
 
 async function main() {
-  const pages = await getAllPages();
+  const pages = await getPosts();
   for (const page of pages) {
     const { Component, loader } =
       importMap[page.frontmatter.layout] || importMap["default"];

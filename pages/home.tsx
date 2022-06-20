@@ -1,9 +1,8 @@
 import React from "react";
-import { Helmet } from "react-helmet";
-import { getAllPages } from "../lib/posts";
+import { getPosts } from "../models/posts";
 
 export async function loader() {
-  const pages = await getAllPages();
+  const pages = await getPosts();
   const posts = pages.filter((page) => page.permalink.includes("/posts/"));
   return { posts };
 }
@@ -12,12 +11,6 @@ export default function Home(props) {
   const { frontmatter, content } = props.page;
   return (
     <>
-      <Helmet>
-        <meta charSet="utf-8" />
-        <title>robdodson.me</title>
-        <link rel="canonical" href="http://robdodson.me" />
-      </Helmet>
-
       <h1>{frontmatter.introHeading}</h1>
       <div dangerouslySetInnerHTML={{ __html: content }} />
       <h2>Posts</h2>
