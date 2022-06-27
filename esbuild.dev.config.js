@@ -1,3 +1,4 @@
+const copy = require("esbuild-copy-static-files");
 const { exec } = require("child_process");
 
 require("esbuild")
@@ -7,6 +8,12 @@ require("esbuild")
     bundle: true,
     outfile: "out.js",
     platform: "node",
+    plugins: [
+      copy({
+        src: "./public",
+        dest: "./dist",
+      }),
+    ],
     watch: {
       onRebuild(error, result) {
         if (error) {
@@ -17,7 +24,6 @@ require("esbuild")
     },
   })
   .then((result) => {
-    console.log("then");
     exec("node out.js");
   })
   .catch(() => process.exit(1));

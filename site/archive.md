@@ -1,3 +1,4 @@
 ---
 page: Archive
+title: Archive
 ---

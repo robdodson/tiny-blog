@@ -3,7 +3,13 @@ import { Helmet } from "react-helmet";
 
 import Tags from "../components/tags";
 
-export default function Post({ page }) {
+type Props = {
+  page: PageData;
+  posts: PageData[];
+};
+
+export default function Post(props: Props) {
+  const { page } = props;
   const { frontmatter, content } = page;
   const { tags } = frontmatter;
   return (
